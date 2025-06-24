@@ -1,6 +1,7 @@
+import ArticleList from '../articleList/index'
 const ArticlesPage = () => {
     return (
-        <>страница статей</>
+        <><ArticleList/></>
     )
 }
 
