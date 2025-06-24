@@ -4,4 +4,28 @@
     height: 140px;
     background: rgb(255, 255, 255);
     padding: 15px 20px;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__info {
+        &-meta {
+            display: flex;
+            flex-wrap: wrap;
+            width: 206px;
+            column-gap: 13px;
+        }
+
+        &-person {
+            display: flex;
+        }
+    }
+
+    &__avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 100%;
+    }
 }
