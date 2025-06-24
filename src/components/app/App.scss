@@ -1,0 +1,36 @@
+.button {
+    border: unset;
+    padding: unset;
+    font-family: Inter;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 28px;
+    letter-spacing: 0%;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.5s;
+    border-radius: 5px;
+
+
+    &_white {
+        color: #000;
+        background: #fff;
+
+        &:hover {
+            background-color: #000;
+            color: #fff;
+        }
+    }
+
+    &_green {
+        text-align: center;
+        border: 1px solid rgb(82, 196, 26);
+        color: rgb(82, 196, 26);
+
+        &:hover {
+            color: #fff;
+
+            background: rgb(82, 196, 26);
+        }
+    }
+}
