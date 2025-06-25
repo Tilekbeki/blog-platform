@@ -33,6 +33,30 @@
             background: rgb(82, 196, 26);
         }
     }
+
+    &_blue {
+        width: 319px;
+        border-radius: 4px;
+        /* Daybreak Blue / blue-6 */
+        background: rgb(24, 144, 255);
+        transition: 0.5s all;
+        border: 1px solid rgb(24, 144, 255);
+        /* Regular / 16 px | 24 px */
+        color: rgb(255, 255, 255);
+        font-family: Roboto;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        letter-spacing: 0%;
+        text-align: center;
+        padding: 8px 0;
+
+        &:hover {
+            background: #fff;
+            border: 1px solid rgb(24, 144, 255);
+            color: #000;
+        }
+    }
 }
 
 .card-user-form {
@@ -53,5 +77,82 @@
 
     a {
         color: #fff;
+    }
+}
+
+.card-title {
+    color: rgb(38, 38, 38);
+    font-family: Roboto;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+    letter-spacing: 0%;
+    text-align: center;
+    padding-bottom: 21px;
+}
+
+.ask-message {
+    text-align: center;
+    /* Regular / 12px | 20 px */
+    font-family: Roboto;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0%;
+
+    span {
+        color: rgb(140, 140, 140);
+
+        text-align: center;
+    }
+
+    a {
+        text-decoration: unset;
+        color: rgb(24, 144, 255);
+    }
+}
+
+
+.form-user {
+    width: 320px;
+    margin-bottom: 8px;
+
+    label {
+        width: 100%;
+        display: block;
+        color: rgb(38, 38, 38);
+        font-family: Roboto;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 22px;
+        text-align: left;
+    }
+
+    input {
+        box-sizing: border-box;
+        /* Grey / grey-5 */
+        border: 1px solid rgb(217, 217, 217);
+        border-radius: 4px;
+        width: 100%;
+        padding: 8px 12px;
+        /* Grey / grey-1 */
+        font-size: 16px;
+
+        &::placeholder {
+            color: rgb(191, 191, 191);
+            font-family: Roboto;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 24px;
+        }
+    }
+}
+
+.form {
+    &__wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 21px;
     }
 }

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "../header/Header";
-import { ArticlePage, ArticlesPage, LoginPage, RegisterPage } from "../pages";
+import { ArticlePage, ArticlesPage, LoginPage, RegisterPage, EditProfilePage } from "../pages";
 import './App.scss';
 
 const App = () => {
@@ -12,13 +12,14 @@ const App = () => {
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/article" element={<ArticlePage />} />
         <Route
-          path="/login"
+          path="/sign-in"
           element={
             <LoginPage/>
           }
         />
 
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/sign-up" element={<RegisterPage />} />
+         <Route path="/profile" element={<EditProfilePage />} />
       </Routes>
     </Router >
   )
