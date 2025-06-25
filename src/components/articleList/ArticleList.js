@@ -1,8 +1,5 @@
 import Article from '../article';
-import { Pagination } from "antd";
 import './ArticleList.scss';
-
-
 
 const ArticleList = () => {
     return (
@@ -13,7 +10,6 @@ const ArticleList = () => {
                 <Article/>
                 <Article/>
             </div>
-            <Pagination/>
         </>
     )
 }
