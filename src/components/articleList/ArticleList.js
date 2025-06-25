@@ -1,14 +1,14 @@
-import Article from '../article';
+import ShortArticle from '../shortArticle';
 import './ArticleList.scss';
 
 const ArticleList = () => {
     return (
         <>
             <div className='articles'>
-                <Article/>
-                <Article/>
-                <Article/>
-                <Article/>
+                <ShortArticle/>
+                <ShortArticle/>
+                <ShortArticle/>
+                <ShortArticle/>
             </div>
         </>
     )

@@ -47,3 +47,11 @@
     text-decoration: unset;
     color: #000;
 }
+
+:where(.css-dev-only-do-not-override-os2fvf).ant-pagination .ant-pagination-item-active {
+    background-color: #1677ff;
+
+    a {
+        color: #fff;
+    }
+}

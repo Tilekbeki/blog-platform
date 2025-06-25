@@ -9,10 +9,11 @@ const HeartSvg = () => (
 );
 const HeartIcon = props => <Icon component={HeartSvg} {...props} />;
 <HeartIcon style={{ color: '#FF0707' }} />
-const Article = () => {
+const ShortArticle = () => {
     return (
         <div className="article">
-            <div className='article__header'>
+           <div className='article-content'>
+             <div className='article__header'>
                 <div className='article__info-meta'>
                     <div className='article-title'>Some article title</div>
                     <div className='heart'><HeartOutlined className='heart__icon'/><span className='heart__count'>12</span></div>
@@ -31,8 +32,9 @@ const Article = () => {
                 </div>
             </div>
             <div className='article__text'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris  nisi ut aliquip ex ea commodo consequat. </div>
+           </div>
         </div>
     )
 }
 
-export default Article;
+export default ShortArticle;
