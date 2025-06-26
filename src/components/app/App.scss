@@ -59,12 +59,23 @@
     }
 }
 
-.card-user-form {
-    padding: 48px 36px;
-    background: #fff;
-    border-radius: 6px;
-    width: 384px;
-    margin: 0 auto;
+.card {
+    &-user-form {
+        padding: 48px 36px;
+        background: #fff;
+        border-radius: 6px;
+        width: 384px;
+        margin: 0 auto;
+    }
+
+    &-article-form {
+        padding: 48px 32px;
+        background: #fff;
+        border-radius: 6px;
+        width: 938px;
+        margin: 0 auto;
+
+    }
 }
 
 .logo a {
@@ -113,39 +124,43 @@
 }
 
 
-.form-user {
-    width: 320px;
-    margin-bottom: 8px;
+.form {
+    &-user {
+        width: 320px;
+        margin-bottom: 8px;
 
-    label {
-        width: 100%;
-        display: block;
-        color: rgb(38, 38, 38);
-        font-family: Roboto;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 22px;
-        text-align: left;
-    }
-
-    input {
-        box-sizing: border-box;
-        /* Grey / grey-5 */
-        border: 1px solid rgb(217, 217, 217);
-        border-radius: 4px;
-        width: 100%;
-        padding: 8px 12px;
-        /* Grey / grey-1 */
-        font-size: 16px;
-
-        &::placeholder {
-            color: rgb(191, 191, 191);
+        label {
+            width: 100%;
+            display: block;
+            color: rgb(38, 38, 38);
             font-family: Roboto;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 400;
-            line-height: 24px;
+            line-height: 22px;
+            text-align: left;
+        }
+
+        input {
+            box-sizing: border-box;
+            /* Grey / grey-5 */
+            border: 1px solid rgb(217, 217, 217);
+            border-radius: 4px;
+            width: 100%;
+            padding: 8px 12px;
+            /* Grey / grey-1 */
+            font-size: 16px;
+
+            &::placeholder {
+                color: rgb(191, 191, 191);
+                font-family: Roboto;
+                font-size: 16px;
+                font-weight: 400;
+                line-height: 24px;
+            }
         }
     }
+
+
 }
 
 .form {
