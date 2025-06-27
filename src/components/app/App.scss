@@ -141,8 +141,6 @@
         }
 
         input {
-            box-sizing: border-box;
-            /* Grey / grey-5 */
             border: 1px solid rgb(217, 217, 217);
             border-radius: 4px;
             width: 100%;
@@ -160,7 +158,33 @@
         }
     }
 
+    &-article {
+        .form__wrap {
+            gap: 21px;
 
+            textarea {
+                width: 100%;
+                border: 1px solid rgb(217, 217, 217);
+                border-radius: 4px;
+                width: 100%;
+                padding: 8px 12px;
+                /* Grey / grey-1 */
+                font-size: 16px;
+                height: 168px;
+
+                resize: none;
+
+                &::placeholder {
+                    color: rgb(191, 191, 191);
+                    font-family: Roboto;
+                    font-size: 16px;
+                    font-weight: 400;
+                    line-height: 24px;
+
+                }
+            }
+        }
+    }
 }
 
 .form {
