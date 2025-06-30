@@ -1,6 +1,12 @@
 import { NavLink } from 'react-router-dom';
-
+import { loginUser } from '../store/slicers/userSlicer';
+import { useDispatch } from 'react-redux';
 const LoginForm = () => {
+    const dispatch = useDispatch();
+    const userData = {
+      "email": "timur.almamatov@yandex.ru",
+    "password": "string"
+    };
     return (
     <>
     <form className="form-user">
@@ -14,7 +20,7 @@ const LoginForm = () => {
                 <input type="password" name="password" id="password" placeholder='Password'/>
             </div>
         </div>
-        <input className="button button_blue" type='submit' value="Login"/>
+        <input className="button button_blue" type='submit' value="Login" onClick={()=> dispatch(loginUser(userData))}/>
         
     </form>
     <div className='ask-message'><span>Don’t have an account? </span><NavLink to='/sign-up'>Sign Up.</NavLink></div>

@@ -1,7 +1,8 @@
 import './NewArticleForm.scss';
 
 const NewArticleForm = () => {
-    return (<form className="form-article">
+    return (
+    <form className="form-article">
         <div className="card-title">New Article</div>
         <div className='form__wrap'>
             <div><label htmlFor="title">Title</label>
@@ -15,9 +16,14 @@ const NewArticleForm = () => {
                 <label htmlFor="text">Text</label>
                 <textarea  name="text" id="text" placeholder='text'/>
             </div>
+            <div>
+                <label htmlFor="tag">Tags</label>
+                <input type="text" name="tag" id="tag" placeholder='Tag'/>
+            </div>
         </div>
         <input className="button button_blue" type='submit' value="Send"/>
-    </form>);
+    </form>)
+    ;
 }
 
 export default NewArticleForm;

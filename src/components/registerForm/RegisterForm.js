@@ -1,7 +1,15 @@
 import { NavLink } from 'react-router-dom';
 import './RegisterForm.scss';
+import { registerUser } from '../store/slicers/userSlicer';
+import { useDispatch } from 'react-redux';
 
 const RegisterForm = () => {
+    const dispatch = useDispatch();
+    const userData = {
+    "username": "tilekbek",
+    "email": "timur.almamatov@yandex.ru",
+    "password": "string"
+    };
     return (
         <>
             <form className="form-user">
@@ -22,7 +30,10 @@ const RegisterForm = () => {
                     <input type="password" name="reapeatpassword" id="reapeatpassword" placeholder='Password'/>
                 </div>
             </div>
-            <input className="button button_blue" type='submit' value="Register"/>
+            <input className="button button_blue" type='submit' value="Register" onClick={(e)=> {
+                e.preventDefault();
+                dispatch(registerUser(userData))
+            }}/>
         </form>
         <div className='ask-message'><span>Already have an account?  </span><NavLink to='/sign-in'>Sign In.</NavLink></div>
     </>
