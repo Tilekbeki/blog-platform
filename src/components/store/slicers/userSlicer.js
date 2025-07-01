@@ -1,14 +1,32 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import blogService from '../../../services/blogService';
+import { act } from 'react';
 
-const {login, registeration} = blogService()
+const {login, registeration, getProfile} = blogService()
 export const loginUser = createAsyncThunk(
   'user/login',
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await login(credentials);
-      console.log(response.user)
-      return response.user; // { email, token }
+      console.log(response.token);
+      
+      localStorage.setItem('jwtToken', response.token);
+      if (response.errors) {
+
+      }
+      return response; // { email, token }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+export const getUser = createAsyncThunk(
+  'user/profile',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await getProfile(credentials);
+      console.log(response.profile);
+      return response.profile; // { email, token }
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -21,7 +39,26 @@ export const registerUser = createAsyncThunk(
     try {
       const response = await registeration(credentials);
       console.log(response);
-      return response.user; // { email, token }
+      localStorage.setItem('jwtToken', response.token);
+      return response; // { email, token }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  'user/update',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await login(credentials);
+      console.log(response.user);
+      
+      localStorage.setItem('jwtToken', response.user.token);
+      if (response.errors) {
+
+      }
+      return response; // { email, token }
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -32,15 +69,26 @@ const userSlice = createSlice({
   name: 'user',
   initialState: {
     email: '',
+    username:'',
     token: '',
+    img:'',
     loading: false,
-    error: null,
+    isLogined: false,
+    validationError: null,
   },
   reducers: {
-    logout: (state) => {
+    logout (state) {
       state.email = '';
       state.token = '';
+      state.isLogined = false;
     },
+    setEmail (state, action) {
+      state.email = action.payload;
+    },
+    setLogin (state) {
+      state.isLogined = true;
+
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -52,13 +100,43 @@ const userSlice = createSlice({
         state.loading = false;
         state.email = action.payload.email;
         state.token = action.payload.token;
+        state.isLogined = true;
+        state.img = action.payload.image;
       })
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.email = action.payload.email;
+        state.token = action.payload.token;
+        state.isLogined = true;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.username = action.payload.username;
+        state.img = action.payload.image;
+        state.isLogined = true;
+      })
+      .addCase(getUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const { logout } = userSlice.actions;
+export const { logout,setLogin } = userSlice.actions;
 export default userSlice.reducer;   

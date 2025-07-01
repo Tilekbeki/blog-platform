@@ -3,7 +3,7 @@ const blogService = () => {
     
     const getResource = async (url) => {
     try {
-      const response = await fetch(`${_BASE_URL}${url}`)
+      const response = await fetch(url)
         .then((res) => res.json())
         .catch((err) => console.error(err));
       return response;
@@ -41,8 +41,11 @@ const blogService = () => {
         const person = {
             user:userData,
         };
-
-        return await sentResource(url, person);
+        console.log(person)
+        let info  = await sentResource(url, person);
+        let image = await getProfile(info.user.username);
+        let newOBJ = {...info.user, ...image.profile}
+        return newOBJ;
     }
 
     const login = async (argumentsss) => {
@@ -51,12 +54,21 @@ const blogService = () => {
             user: argumentsss,
         };
 
-        return await sentResource(url, person);
+        let info  = await sentResource(url, person);
+        let image = await getProfile(info.user.username);
+        let newOBJ = {...info.user, ...image.profile}
+        return newOBJ;
     };
+
+    const getProfile = async (username) => {
+        const url = `${_BASE_URL}/profiles/${username}`;
+        return await getResource(url);
+    } 
 
     return {
         registeration, 
-        login
+        login,
+        getProfile
     }
 }
 

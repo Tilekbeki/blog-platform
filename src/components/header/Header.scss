@@ -46,3 +46,23 @@
         }
     }
 }
+
+.logined-user-block {
+    display: flex;
+    gap: 26px;
+    align-items: center;
+
+    .create-article-button {
+        height: 31px;
+        text-decoration: unset;
+        width: 113px;
+        font-size: 14px;
+    }
+
+    .logout-button {
+        width: 109px;
+        height: 51px;
+        background: #fff;
+        border: 1px solid #000;
+    }
+}

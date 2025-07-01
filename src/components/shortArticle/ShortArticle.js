@@ -23,7 +23,7 @@ const ShortArticle = () => {
                         <Tag>Tag 1</Tag>
                     </div>
                 </div>
-                <div className='article__info-person'>
+                <div className='article-info-person'>
                     <div>
                         <div className='article__author'>John Doe</div>
                         <div className='article__date'>March 5, 2020</div>
