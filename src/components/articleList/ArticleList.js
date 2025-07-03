@@ -1,20 +1,24 @@
 import ShortArticle from '../shortArticle';
 import './ArticleList.scss';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { getArticlesList } from '../store/slicers/articleSlicer';
 
 const ArticleList = () => {
-    const {email} = useSelector(state=>state.user)
+    const dispatch = useDispatch();
+    const {data} = useSelector(state => state.articles);
+
+    useEffect(() => {
+        dispatch(getArticlesList());
+    }, [dispatch]);
+
     return (
-        <>
-            <div className='articles'>
-                {email}
-                <ShortArticle/>
-                <ShortArticle/>
-                <ShortArticle/>
-                <ShortArticle/>
-            </div>
-        </>
-    )
-}
+        <div className='articles'>
+            {data.map((el, index) => (
+                <ShortArticle key={index} title={el.title} description={el.description} tags={el.tagList} author={el.author} datePublished={el.createdAt}/>
+            ))}
+        </div>
+    );
+};
 
 export default ArticleList;

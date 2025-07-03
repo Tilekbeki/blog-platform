@@ -63,12 +63,21 @@ const blogService = () => {
     const getProfile = async (username) => {
         const url = `${_BASE_URL}/profiles/${username}`;
         return await getResource(url);
+    };
+
+    const getArticles = async (length=5, offset=5) => {
+        const url = `${_BASE_URL}/articles?limit=${length}&offset=${offset}`;
+        console.log('сработал')
+        console.log(await getResource(url))
+        const response = await getResource(url);
+        return response.articles
     } 
 
     return {
         registeration, 
         login,
-        getProfile
+        getProfile,
+        getArticles
     }
 }
 
