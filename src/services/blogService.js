@@ -1,5 +1,5 @@
 const blogService = () => {
-    const _BASE_URL = 'https://blog-platform.kata.academy/api/';
+    const _BASE_URL = 'https://blog-platform.kata.academy/api';
     
     const getResource = async (url) => {
     try {
@@ -13,10 +13,10 @@ const blogService = () => {
     }
   };
 
-  const sentResource = async (url, parameters) => {
+  const sentResource = async (url, parameters, typeReq = 'POST') => {
     try {
         const response = await fetch(url, {
-        method: 'POST',
+        method: typeReq,
         body: JSON.stringify(parameters),
         headers: {
             Accept: 'application/json',
@@ -57,6 +57,7 @@ const blogService = () => {
         let info  = await sentResource(url, person);
         let image = await getProfile(info.user.username);
         let newOBJ = {...info.user, ...image.profile}
+        console.log('sada',newOBJ)
         return newOBJ;
     };
 
@@ -65,19 +66,65 @@ const blogService = () => {
         return await getResource(url);
     };
 
-    const getArticles = async (length=5, offset=5) => {
-        const url = `${_BASE_URL}/articles?limit=${length}&offset=${offset}`;
+    const getUserInfo = async (token) => {
+        const url = `${_BASE_URL}/user`;
+        try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const userInfo = await response.json();
+        return userInfo.user; 
+    } catch (error) {
+        console.error('Ошибка при получении данных:', error);
+        throw error;
+    }
+    }
+
+    const updateUser = async (userData) => {
+        const url = `${_BASE_URL}/user`;
+        const person = {
+            user:userData,
+        };
+        console.log(person)
+        let info  = await sentResource(url, person, 'PUT');
+        let image = await getProfile('',info.user.username);
+        let newOBJ = {...info.user, ...image.user}
+        return newOBJ;
+    }
+
+    const getArticles = async (pageNumber=1) => {
+        let offset = pageNumber*5;
+        console.log('offset', offset);
+        const url = `${_BASE_URL}/articles?limit=${5}&offset=${pageNumber}`;
         console.log('сработал')
         console.log(await getResource(url))
         const response = await getResource(url);
         return response.articles
+    };
+
+    const getArticle = async (slug) => {
+        const url = `${_BASE_URL}/articles/${slug}`;
+        console.log(await getResource(url))
+        const response = await getResource(url);
+        return response.article
     } 
 
     return {
         registeration, 
         login,
         getProfile,
-        getArticles
+        getArticles,
+        getArticle,
+        updateUser,
+        getUserInfo
     }
 }
 

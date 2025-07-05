@@ -15,7 +15,7 @@ const LoginForm = () => {
      let navigate = useNavigate();
     const schema = Yup.object().shape({
         email: Yup.string().email("Invalid email").required("Email is required"),
-        password: Yup.string().min(8, "Minimum 8 characters").max(32, "Maximum 32 characters").required("Password is required"),
+        password: Yup.string().required("Password is required"),
     });
     
     const { register, handleSubmit, formState: { errors }, reset } = useForm({

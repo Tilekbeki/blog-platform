@@ -1,7 +1,7 @@
 import ArticleList from '../articleList/index';
 import { Pagination } from "antd";
 import { useDispatch } from 'react-redux';
-import { getArticlesList } from '../store/slicers/articleSlicer';
+import { getArticlesList } from '../store/slicers/articlesSlicer';
 const ArticlesPage = () => {
     const dispatch = useDispatch();
 
@@ -11,7 +11,7 @@ const ArticlesPage = () => {
     return (
     <>
         <div style={{padding: "26px 0"}}><ArticleList/>
-        <Pagination align="center" style={{padding: "13px 0"}} onClick={handlePageChange} defaultCurrent={1} total={50} />
+        <Pagination align="center" style={{padding: "13px 0"}} onChange={handlePageChange} defaultCurrent={1} total={50} />
         </div>
         
     </>

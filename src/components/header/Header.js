@@ -16,7 +16,6 @@ const Header = () => {
   };
 
 
-  console.log(username, isLogined);
   const controlElements = <div className='logined-user-block'>
                             <NavLink to="/new-article" className='button button_green create-article-button'>create article</NavLink>
                             <NavLink to="/profile" style={{textDecoration: "unset"}}>

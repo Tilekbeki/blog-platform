@@ -11,10 +11,10 @@ const RegisterForm = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
     const schema = Yup.object().shape({
-        username: Yup.string().required("Username is required"),
+        username: Yup.string().min(3, "Minimum 3 characters").max(20, "Maximum 20 characters").required("Username is required"),
         email: Yup.string().email("Invalid email").required("Email is required"),
-        password: Yup.string().min(8, "Minimum 8 characters").max(32, "Maximum 32 characters").required("Password is required"),
-        confirm_password: Yup.string()
+        password: Yup.string().min(6, "Minimum 6 characters").max(40, "Maximum 40 characters").required("Password is required"),
+        confirm_password: Yup.string().min(6, "Minimum 6 characters").max(40, "Maximum 40 characters")
             .oneOf([Yup.ref("password"), null], "Passwords must match")
             .required("Please confirm your password"),
         confirm_checkbox: Yup.boolean()

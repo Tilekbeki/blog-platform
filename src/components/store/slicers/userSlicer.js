@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import blogService from '../../../services/blogService';
 
-const {login, registeration, getProfile} = blogService()
+const {login, registeration, getProfile, getUserInfo} = blogService()
 export const loginUser = createAsyncThunk(
   'user/login',
   async (credentials, { rejectWithValue }) => {
@@ -46,7 +46,7 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const updateUser = createAsyncThunk(
+export const updateCurrentUser = createAsyncThunk(
   'user/update',
   async (credentials, { rejectWithValue }) => {
     try {
@@ -57,6 +57,19 @@ export const updateUser = createAsyncThunk(
       if (response.errors) {
 
       }
+      return response; // { email, token }
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const getCurrentUserInfo = createAsyncThunk(
+  'user/getUserInfo',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await getUserInfo(credentials);
+      console.log(response);
       return response; // { email, token }
     } catch (err) {
       return rejectWithValue(err.message);
@@ -131,6 +144,21 @@ const userSlice = createSlice({
         state.isLogined = true;
       })
       .addCase(getUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      }).addCase(getCurrentUserInfo.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCurrentUserInfo.fulfilled, (state, action) => {
+        state.loading = false;
+        state.username = action.payload.username;
+        state.email = action.payload.email;
+        state.img = action.payload.image;
+        if (!action.payload.image) state.img = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+        state.isLogined = true;
+      })
+      .addCase(getCurrentUserInfo.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
