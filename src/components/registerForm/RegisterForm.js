@@ -27,7 +27,6 @@ const RegisterForm = () => {
     });
     
     const onSubmitHandler = (data) => {
-        console.log(data); // Тут уже есть username, email, password и confirm_password
         dispatch(registerUser({
             username: data.username,
             email: data.email.toLowerCase(),

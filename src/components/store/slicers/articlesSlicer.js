@@ -8,7 +8,6 @@ export const getArticlesList = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await getArticles(credentials);
-      console.log(response);
       
       return response;
     } catch (err) {
@@ -22,7 +21,6 @@ export const getArticle = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await getArticles(credentials);
-      console.log(response);
       
       return response;
     } catch (err) {

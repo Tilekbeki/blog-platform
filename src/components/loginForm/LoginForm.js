@@ -23,7 +23,6 @@ const LoginForm = () => {
     });
     
     const onSubmitHandler = (data) => {
-        console.log(data); // Тут уже есть username, email, password и confirm_password
         dispatch(loginUser({
             email: data.email.toLowerCase(),
             password: data.password,

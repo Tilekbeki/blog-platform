@@ -8,7 +8,6 @@ const useCheckJWT = () => {
     const {isLogined} = useSelector(state=> state.user)
     if (!isLogined && token) {
         const decoded = jwtDecode(token);
-        console.log('я вызывался');
         dispatch(getUser(decoded.username));
         dispatch(setLogin())
         return {

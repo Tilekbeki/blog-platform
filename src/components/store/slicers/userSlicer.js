@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import blogService from '../../../services/blogService';
 
-const {login, registeration, getProfile, getUserInfo} = blogService()
+const {login, registeration, getProfile, getUserInfo, updateUser} = blogService()
 export const loginUser = createAsyncThunk(
   'user/login',
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await login(credentials);
-      console.log(response.token);
       
       localStorage.setItem('jwtToken', response.token);
       if (response.errors) {
@@ -24,7 +23,6 @@ export const getUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await getProfile(credentials);
-      console.log(response.profile);
       return response.profile; // { email, token }
     } catch (err) {
       return rejectWithValue(err.message);
@@ -37,7 +35,6 @@ export const registerUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await registeration(credentials);
-      console.log(response);
       localStorage.setItem('jwtToken', response.token);
       return response; // { email, token }
     } catch (err) {
@@ -50,10 +47,8 @@ export const updateCurrentUser = createAsyncThunk(
   'user/update',
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await login(credentials);
-      console.log(response.user);
-      
-      localStorage.setItem('jwtToken', response.user.token);
+      const response = await updateUser(credentials);
+      localStorage.setItem('jwtToken', response.token);
       if (response.errors) {
 
       }
@@ -69,7 +64,6 @@ export const getCurrentUserInfo = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await getUserInfo(credentials);
-      console.log(response);
       return response; // { email, token }
     } catch (err) {
       return rejectWithValue(err.message);
@@ -159,6 +153,22 @@ const userSlice = createSlice({
         state.isLogined = true;
       })
       .addCase(getCurrentUserInfo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateCurrentUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateCurrentUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.username = action.payload.username;
+        state.email = action.payload.email;
+        state.img = action.payload.image;
+        if (!action.payload.image) state.img = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+        state.isLogined = true;
+      })
+      .addCase(updateCurrentUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -12,11 +12,9 @@ import {DateTime} from 'luxon';
 import useCheckJWT from '../../hooks/useCheckJWT';
 
 const confirm = e => {
-  console.log(e);
   message.success('Click on Yes');
 };
 const cancel = e => {
-  console.log(e);
   message.error('Click on No');
 };
 

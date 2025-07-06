@@ -7,12 +7,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from 'react-hook-form';
 import { updateCurrentUser } from '../store/slicers/userSlicer';
 import { getCurrentUserInfo } from '../store/slicers/userSlicer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const EditProfileForm = () => {
     const {username, email, img:avatar} = useSelector(state=>state.user);
-    
+    const [avatarUrl, setAvatarUrl] = useState(avatar);
+    const [isAvatarValid, setIsAvatarValid] = useState(true); // изначально true
     const dispatch = useDispatch();
+   
     useEffect(()=>{
        dispatch(getCurrentUserInfo(localStorage.getItem('jwtToken')))
     }, [])
@@ -29,38 +31,61 @@ const EditProfileForm = () => {
                 .required('Please enter url'),
         });
     
-    const { register, handleSubmit, formState: { errors }, reset } = useForm({
+    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
         resolver: yupResolver(schema),
     });
     
     const onSubmitHandler = (data) => {
-        console.log(data); // Тут уже есть username, email, password и confirm_password
         dispatch(updateCurrentUser({
             username: data.username,
-            email: data.email.toLowerCase(),
-            newPassword: data.newPassword,
-            avatar: data.avatar,
+            email: data.email,
+            password: data.newPassword,
+            image: data.avatar,
         }));
-        reset();
-        navigate("/");
     };
+        useEffect(() => {
+            setValue('username', username);
+            setValue('email', email);
+            setValue('avatar', avatar);
+            
+        }, [username, email, avatar]);
+         const onValueChange = (field, value) => {
+        setValue(field, value);
+        if (field === 'avatar') {
+            setAvatarUrl(value);
+            setIsAvatarValid(true); // сбрасываем состояние перед загрузкой
+        }
+        };
 return (
-        <form className="form-user" onSubmit={onSubmitHandler}>
+        <form className="form-user" onSubmit={handleSubmit(onSubmitHandler)}>
         <div className="card-title">Edit Profile</div>
         <div className='form__wrap'>
             <div><label htmlFor="name">Username</label>
-            <input {...register("username")} type="text" name="name" id="name" placeholder='Username' defaultValue={username} required/>
+            <input {...register("username")} type="text" name="name" id="name" placeholder='Username' onChange={(e) => onValueChange('username', e.target.value)} required/>
             </div>
             <div><label htmlFor="email">Email address</label>
-            <input {...register("email")} type="email" name="email" id="email" placeholder='Email address' defaultValue={email} required/>
+            <input {...register("email")} type="email" name="email" id="email" placeholder='Email address' onChange={(e) => onValueChange('email', e.target.value)}  required/>
             </div>
             <div>
                 <label htmlFor="newpassword">New Password</label>
-                <input {...register("newPassword")} type="password" name="newPassword" id="newPassword" placeholder='New Password' required/>
+                <input {...register("newPassword")} min="6" type="password" name="newPassword" id="newPassword" placeholder='New Password' onChange={(e) => onValueChange('password', e.target.value)} required/>
             </div>
             <div>
                 <label htmlFor="link">Avatar image (url)</label>
-                <input {...register("avatar")} type="url" name="link" id="link" placeholder='Avatar image (url)' defaultValue={avatar} required/>
+                <input {...register("avatar")} type="url" name="link" id="link" placeholder='Avatar image (url)' onChange={(e) => onValueChange('avatar', e.target.value)} required/>
+            </div>
+            <div>
+            <label>Preview:</label>
+            <img
+                src={avatarUrl}
+                alt="Avatar preview"
+                style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover', border: '1px solid #ccc' }}
+                onLoad={() => setIsAvatarValid(true)}
+                onError={() => setIsAvatarValid(false)}
+            />
+            {!isAvatarValid && (
+                <div style={{ color: 'red' }}>⚠️ Image failed to load. Please enter a valid URL.</div>
+            )}
             </div>
         </div>
         <input className="button button_blue" type='submit' value="Save"/>

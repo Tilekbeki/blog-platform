@@ -1,14 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import blogService from '../../../services/blogService';
 
-const {getArticle} = blogService();
+const {getArticle, createArticle} = blogService();
 
 export const getCurrentArticle = createAsyncThunk(
   'articles/current',
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await getArticle(credentials);
-      console.log(response);
+      
+      return response;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const createUserArticle = createAsyncThunk(
+  'articles/create',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await createArticle(credentials);
       
       return response;
     } catch (err) {
@@ -54,6 +66,26 @@ const articleSlice = createSlice({
         
       })
       .addCase(getCurrentArticle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createUserArticle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createUserArticle.fulfilled, (state, action) => {
+        state.slug = action.payload.slug;
+        state.title = action.payload.title;
+        state.description = action.payload.description;
+        state.body = action.payload.body;
+        state.tags = action.payload.tagList;
+        state.image = action.payload.image;
+        state.favoritesCount = action.payload.favoritesCount;
+        state.author = action.payload.author;
+        state.createdAt = action.payload.createdAt;
+        
+      })
+      .addCase(createUserArticle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

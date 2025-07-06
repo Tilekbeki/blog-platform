@@ -1,4 +1,4 @@
-import './NewArticleForm.scss';
+import './EditArticleForm.scss';
 import * as Yup from 'yup';
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, useFieldArray, Controller  } from 'react-hook-form';
@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import {createUserArticle} from "../store/slicers/articleSlicer";
 
 
-const NewArticleForm = () => {
+const EditArticleForm = () => {
     const dispatch = useDispatch();
      const schema = Yup.object().shape({
   title: Yup.string()
@@ -69,7 +69,7 @@ const NewArticleForm = () => {
         };
     return (
     <form className="form-article" onSubmit={handleSubmit(onSubmitHandler)}>
-  <div className="card-title">New Article</div>
+  <div className="card-title">Edit article</div>
   <div className="form__wrap">
     <div>
       <label htmlFor="title">Title</label>
@@ -111,4 +111,4 @@ const NewArticleForm = () => {
     ;
 }
 
-export default NewArticleForm;
+export default EditArticleForm;

@@ -13,15 +13,20 @@ const blogService = () => {
     }
   };
 
-  const sentResource = async (url, parameters, typeReq = 'POST') => {
+  const sentResource = async (url, parameters, typeReq = 'POST', token) => {
     try {
+        const headers = {
+            Accept: 'application/json',
+            'Content-Type': 'application/json;charset=utf-8',
+            ...(token && { Authorization: `Token ${token}` })
+        };
+
+
+
         const response = await fetch(url, {
         method: typeReq,
         body: JSON.stringify(parameters),
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json;charset=utf-8',
-        },
+        headers
         });
 
         if (!response.ok) {
@@ -41,7 +46,6 @@ const blogService = () => {
         const person = {
             user:userData,
         };
-        console.log(person)
         let info  = await sentResource(url, person);
         let image = await getProfile(info.user.username);
         let newOBJ = {...info.user, ...image.profile}
@@ -57,7 +61,6 @@ const blogService = () => {
         let info  = await sentResource(url, person);
         let image = await getProfile(info.user.username);
         let newOBJ = {...info.user, ...image.profile}
-        console.log('sada',newOBJ)
         return newOBJ;
     };
 
@@ -90,30 +93,34 @@ const blogService = () => {
 
     const updateUser = async (userData) => {
         const url = `${_BASE_URL}/user`;
+        const token = localStorage.getItem('jwtToken')
         const person = {
             user:userData,
         };
-        console.log(person)
-        let info  = await sentResource(url, person, 'PUT');
-        let image = await getProfile('',info.user.username);
-        let newOBJ = {...info.user, ...image.user}
+        let info  = await sentResource(url, person, 'PUT', token);
+        let newOBJ = {...info.user}
         return newOBJ;
     }
 
     const getArticles = async (pageNumber=1) => {
         let offset = pageNumber*5;
-        console.log('offset', offset);
         const url = `${_BASE_URL}/articles?limit=${5}&offset=${pageNumber}`;
-        console.log('сработал')
-        console.log(await getResource(url))
         const response = await getResource(url);
         return response.articles
     };
 
     const getArticle = async (slug) => {
         const url = `${_BASE_URL}/articles/${slug}`;
-        console.log(await getResource(url))
         const response = await getResource(url);
+        return response.article
+    } 
+     const createArticle = async (articleData) => {
+        const article = {
+            article: articleData
+        }
+        const url = `${_BASE_URL}/articles`;
+        const token = localStorage.getItem('jwtToken')
+        const response = await sentResource(url, article, 'POST', token);
         return response.article
     } 
 
@@ -124,7 +131,8 @@ const blogService = () => {
         getArticles,
         getArticle,
         updateUser,
-        getUserInfo
+        getUserInfo,
+        createArticle
     }
 }
 
