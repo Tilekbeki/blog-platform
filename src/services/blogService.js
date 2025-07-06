@@ -27,7 +27,7 @@ const blogService = () => {
     };
 
     // Только добавляем тело, если это не GET/HEAD
-    if (typeReq !== 'GET' && typeReq !== 'DELETE' && typeReq !== 'HEAD') {
+    if (parameters) {
       config.body = JSON.stringify(parameters);
     }
 
@@ -116,6 +116,7 @@ const blogService = () => {
     const getArticle = async (slug) => {
         const url = `${_BASE_URL}/articles/${slug}`;
         const response = await getResource(url);
+        console.log(response)
         return response.article
     } 
     const createArticle = async (articleData) => {
@@ -136,13 +137,30 @@ const blogService = () => {
         const url = `${_BASE_URL}/articles/${slug}`;
         const token = localStorage.getItem('jwtToken')
         const response = await sentResource(url, article, 'PUT', token);
-        console.log('все', response.article)
+        console.log('все', response.article);
         return response.article
     } 
 
     const deleteArticle = async (slug) => {
         const url = `${_BASE_URL}/articles/${slug}`;
         const token = localStorage.getItem('jwtToken')
+        const response = await sentResource(url, '', 'DELETE', token);
+        console.log('все', response.article)
+        return response.article
+    } 
+
+    const likeArticle = async (slug) => {
+        const url = `${_BASE_URL}/articles/${slug}/favorite`;
+        const token = localStorage.getItem('jwtToken')
+        console.log('все', slug)
+        const response = await sentResource(url, '', 'POST', token);
+        console.log('лайк', response)
+        return response.article
+    } 
+
+    const unLikeArticle = async (slug) => {
+        const url = `${_BASE_URL}/articles/${slug}/favorite`;
+        const token = localStorage.getItem('jwtToken');
         const response = await sentResource(url, '', 'DELETE', token);
         console.log('все', response.article)
         return response.article
@@ -158,7 +176,9 @@ const blogService = () => {
         getUserInfo,
         createArticle,
         updateArticle,
-        deleteArticle
+        deleteArticle,
+        likeArticle,
+        unLikeArticle
     }
 }
 

@@ -3,6 +3,7 @@ import Icon, {HeartOutlined } from '@ant-design/icons';
 import './Article.scss';
 import { NavLink } from 'react-router-dom';
 import { DateTime } from 'luxon';
+import { useEffect, useState } from 'react';
 
 const HeartSvg = () => (
   <svg width="18px" height="17px" fill="currentColor" viewBox="0 0 1024 1024">
@@ -17,34 +18,66 @@ const handleHeartChange = (slug) => {
     console.log(slug)
 }
 
-const ShortArticle = ({title, description, tags, author, datePublished, slug, favorited}) => {
-    return (
-        <div className="article">
-           <div className='article-content'>
-             <div className='article__header'>
-                <div className='article__info-meta'>
-                    <NavLink to={`/articles/${slug}`} className='article-title'>{title}</NavLink>
-                    <div className='heart'>
-                        <div onClick={()=>handleHeartChange(slug)} style={{cursor: "pointer"}}>{favorited ? <HeartOutlined className='heart__icon'/> : <HeartIcon style={{ color: '#FF0707' }}/>}</div>
-                        <span className='heart__count'>12</span></div>
-                    <div className='tags'>
-                        {tags.map((el, index) => (
-                            <Tag key={index}>{el}</Tag>
-                        ))}
-                    </div>
-                </div>
-                <div className='article-info-person'>
-                    <div className='article-info-person__flex'>
-                        <div className='article__author'>{author.username}</div>
-                        <div className='article__date'>{DateTime.fromISO(datePublished).toFormat('LLLL dd, yyyy  ')}</div>
-                    </div>
-                    <img className='article__avatar' src={author.image} alt='avatar'/>
-                </div>
+
+const ShortArticle = ({ title, description, tags, author, datePublished, slug, favorited, favoritesCount }) => {
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    const storedLikes = JSON.parse(localStorage.getItem('likesCollection') || '[]');
+    const likesSet = new Set(storedLikes);
+    setIsLiked(likesSet.has(slug));
+  }, [slug]);
+
+  const handleHeartChange = (slug) => {
+    console.log(slug);
+    // Пример логики лайка/анлайка
+    const storedLikes = JSON.parse(localStorage.getItem('likesCollection') || '[]');
+    const likesSet = new Set(storedLikes);
+    if (likesSet.has(slug)) {
+      likesSet.delete(slug);
+      setIsLiked(false);
+    } else {
+      likesSet.add(slug);
+      setIsLiked(true);
+    }
+    localStorage.setItem('likesCollection', JSON.stringify([...likesSet]));
+  };
+
+  return (
+    <div className="article">
+      <div className="article-content">
+        <div className="article__header">
+          <div className="article__info-meta">
+            <NavLink to={`/articles/${slug}`} className="article-title">
+              {title}
+            </NavLink>
+            <div className="heart">
+              <div onClick={() => handleHeartChange(slug)} style={{ cursor: 'pointer' }}>
+                {isLiked ? <HeartIcon style={{ color: '#FF0707' }} /> : <HeartOutlined className="heart__icon" />}
+              </div>
+              <span className="heart__count">{favoritesCount}</span>
             </div>
-            <div className='article__text'>{description}</div>
-           </div>
+            <div className="tags">
+              {tags.map((el, index) => (
+                <Tag key={index}>{el}</Tag>
+              ))}
+            </div>
+          </div>
+          <div className="article-info-person">
+            <div className="article-info-person__flex">
+              <div className="article__author">{author.username}</div>
+              <div className="article__date">
+                {DateTime.fromISO(datePublished).toFormat('LLLL dd, yyyy')}
+              </div>
+            </div>
+            <img className="article__avatar" src={author.image} alt="avatar" />
+          </div>
         </div>
-    )
-}
+        <div className="article__text">{description}</div>
+      </div>
+    </div>
+  );
+};
+
 
 export default ShortArticle;
