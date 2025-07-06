@@ -12,14 +12,21 @@ const HeartSvg = () => (
 );
 const HeartIcon = props => <Icon component={HeartSvg} {...props} />;
 <HeartIcon style={{ color: '#FF0707' }} />
-const ShortArticle = ({title, description, tags, author, datePublished, slug}) => {
+
+const handleHeartChange = (slug) => {
+    console.log(slug)
+}
+
+const ShortArticle = ({title, description, tags, author, datePublished, slug, favorited}) => {
     return (
         <div className="article">
            <div className='article-content'>
              <div className='article__header'>
                 <div className='article__info-meta'>
                     <NavLink to={`/articles/${slug}`} className='article-title'>{title}</NavLink>
-                    <div className='heart'><HeartOutlined className='heart__icon'/><span className='heart__count'>12</span></div>
+                    <div className='heart'>
+                        <div onClick={()=>handleHeartChange(slug)} style={{cursor: "pointer"}}>{favorited ? <HeartOutlined className='heart__icon'/> : <HeartIcon style={{ color: '#FF0707' }}/>}</div>
+                        <span className='heart__count'>12</span></div>
                     <div className='tags'>
                         {tags.map((el, index) => (
                             <Tag key={index}>{el}</Tag>

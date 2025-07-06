@@ -29,8 +29,7 @@ const NewArticleForm = () => {
       Yup.object().shape({
         Tag: Yup.string()
           .required("Tag cannot be empty")
-          .max(10, "Tag must be at most 10 characters")
-          .matches(/^[a-zA-Z0-9-_]+$/, "Tag can only contain letters, numbers, dashes and underscores"),
+          .max(10, "Tag must be at most 10 characters"),
       })
     )
     .min(1, "At least one tag is required").test(
@@ -60,12 +59,16 @@ const NewArticleForm = () => {
         });
         
         const onSubmitHandler = (data) => {
-            dispatch(createUserArticle({
-                title: data.title,
+            let tagsArray;
+            tagsArray = data.tags.map(el=> el.Tag); 
+            dispatch(createUserArticle( {
+                    title: data.title,
                 description: data.description,
                 body: data.body,
-                tags: data.tags,
-            }));
+                tagList:tagsArray,
+                }));
+            
+           
         };
     return (
     <form className="form-article" onSubmit={handleSubmit(onSubmitHandler)}>

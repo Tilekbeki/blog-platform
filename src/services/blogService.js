@@ -15,19 +15,23 @@ const blogService = () => {
 
   const sentResource = async (url, parameters, typeReq = 'POST', token) => {
     try {
-        const headers = {
-            Accept: 'application/json',
-            'Content-Type': 'application/json;charset=utf-8',
-            ...(token && { Authorization: `Token ${token}` })
-        };
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json;charset=utf-8',
+      ...(token && { Authorization: `Token ${token}` }),
+    };
 
+    const config = {
+      method: typeReq,
+      headers,
+    };
 
+    // Только добавляем тело, если это не GET/HEAD
+    if (typeReq !== 'GET' && typeReq !== 'DELETE' && typeReq !== 'HEAD') {
+      config.body = JSON.stringify(parameters);
+    }
 
-        const response = await fetch(url, {
-        method: typeReq,
-        body: JSON.stringify(parameters),
-        headers
-        });
+    const response = await fetch(url, config);
 
         if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -114,13 +118,33 @@ const blogService = () => {
         const response = await getResource(url);
         return response.article
     } 
-     const createArticle = async (articleData) => {
+    const createArticle = async (articleData) => {
         const article = {
             article: articleData
         }
         const url = `${_BASE_URL}/articles`;
         const token = localStorage.getItem('jwtToken')
         const response = await sentResource(url, article, 'POST', token);
+        return response.article
+    } 
+    const updateArticle = async (articleData) => {
+        const {slug,...otherData} = articleData;
+        const article = {
+            article: otherData
+        }
+        console.log(article)
+        const url = `${_BASE_URL}/articles/${slug}`;
+        const token = localStorage.getItem('jwtToken')
+        const response = await sentResource(url, article, 'PUT', token);
+        console.log('все', response.article)
+        return response.article
+    } 
+
+    const deleteArticle = async (slug) => {
+        const url = `${_BASE_URL}/articles/${slug}`;
+        const token = localStorage.getItem('jwtToken')
+        const response = await sentResource(url, '', 'DELETE', token);
+        console.log('все', response.article)
         return response.article
     } 
 
@@ -132,7 +156,9 @@ const blogService = () => {
         getArticle,
         updateUser,
         getUserInfo,
-        createArticle
+        createArticle,
+        updateArticle,
+        deleteArticle
     }
 }
 

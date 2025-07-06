@@ -15,7 +15,7 @@ const ArticleList = () => {
     return (
         <div className='articles'>
             {data.map((el, index) => (
-                <ShortArticle key={index} title={el.title} description={el.description} tags={el.tagList} author={el.author} datePublished={el.createdAt} slug={el.slug}/>
+                <ShortArticle key={index} title={el.title} description={el.description} tags={el.tagList} author={el.author} datePublished={el.createdAt} slug={el.slug} favorited={el.favorited}/>
             ))}
         </div>
     );

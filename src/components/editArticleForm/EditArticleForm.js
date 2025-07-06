@@ -2,11 +2,31 @@ import './EditArticleForm.scss';
 import * as Yup from 'yup';
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, useFieldArray, Controller  } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import {createUserArticle} from "../store/slicers/articleSlicer";
+import { useDispatch,useSelector } from 'react-redux';
+import {updateUserArticle} from "../store/slicers/articleSlicer";
+import { getCurrentArticle } from '../store/slicers/articleSlicer';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 
 const EditArticleForm = () => {
+    const { article } = useParams();
+  const {title, author, description, favoritesCount, tags, body, createdAt,slug} = useSelector(state=>state.article);
+
+  useEffect(()=> {
+    dispatch(getCurrentArticle(article));
+    console.log(title)
+  }, []);
+
+   useEffect(() => {
+            setValue('title', title);
+            setValue('body', body);
+            setValue('description', description)
+            if (Array.isArray(tags)) {
+              const formattedTags = tags.map(tag => ({ Tag: tag }));
+              setValue('tags', formattedTags);
+            }
+        }, [title, body, description, tags]);
     const dispatch = useDispatch();
      const schema = Yup.object().shape({
   title: Yup.string()
@@ -29,8 +49,7 @@ const EditArticleForm = () => {
       Yup.object().shape({
         Tag: Yup.string()
           .required("Tag cannot be empty")
-          .max(10, "Tag must be at most 10 characters")
-          .matches(/^[a-zA-Z0-9-_]+$/, "Tag can only contain letters, numbers, dashes and underscores"),
+          .max(10, "Tag must be at most 10 characters"),
       })
     )
     .min(1, "At least one tag is required").test(
@@ -51,7 +70,7 @@ const EditArticleForm = () => {
     title: '',
     description: '',
     body: '',
-    tags: [{ Tag: '' }]  // начальное значение массива},
+    tags: [{Tag:''}]  // начальное значение массива},
   },
         });
         const { fields, append, remove } = useFieldArray({
@@ -60,12 +79,16 @@ const EditArticleForm = () => {
         });
         
         const onSubmitHandler = (data) => {
-            dispatch(createUserArticle({
+           let tagsArray;
+            tagsArray = data.tags.map(el=> el.Tag); 
+            dispatch(updateUserArticle( {
                 title: data.title,
                 description: data.description,
                 body: data.body,
-                tags: data.tags,
-            }));
+                tagList: tagsArray,
+                slug: slug
+              }));
+    
         };
     return (
     <form className="form-article" onSubmit={handleSubmit(onSubmitHandler)}>
@@ -88,7 +111,7 @@ const EditArticleForm = () => {
       <ul>
         {fields.map((item, index) => (
             <li key={item.id}>
-                <input {...register(`tags.${index}.Tag`)} placeholder="Tag" />
+                <input {...register(`tags.${index}.Tag`)} defaultValue={item.Tag} placeholder="Tag" />
                 {errors.tags?.[index]?.Tag && (
                 <p className="error">{errors.tags[index].Tag.message}</p>
                 )}
@@ -98,7 +121,7 @@ const EditArticleForm = () => {
       </ul>
       <button
         type="button"
-        onClick={() => append({ Tag: ""})}
+        onClick={() => append({ Tag: "" })}
       >
         Add Tag
       </button>

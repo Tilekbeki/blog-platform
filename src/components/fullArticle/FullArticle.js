@@ -4,27 +4,28 @@ import './FullArticle.scss';
 import { NavLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { getCurrentArticle } from '../store/slicers/articleSlicer';
+import { getCurrentArticle, DeleteCurrentUserArticle } from '../store/slicers/articleSlicer';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Markdown from 'react-markdown';
 import {DateTime} from 'luxon';
 import useCheckJWT from '../../hooks/useCheckJWT';
 
+
+
+const FullArticle = () => {
+  const { article } = useParams();
+  const {title, author, description, favoritesCount, tags, body, createdAt,slug} = useSelector(state=>state.article);
+  const funt = useCheckJWT();
+  const dispatch = useDispatch();
+  const { isLogined, username } = useSelector(state => state.user);
 const confirm = e => {
   message.success('Click on Yes');
+  dispatch(DeleteCurrentUserArticle(article))
 };
 const cancel = e => {
   message.error('Click on No');
 };
-
-const FullArticle = () => {
-  const { article } = useParams();
-  const {title, author, description, favoritesCount, tags, body, createdAt} = useSelector(state=>state.article);
-  const funt = useCheckJWT();
-  const dispatch = useDispatch();
-  const { isLogined, username } = useSelector(state => state.user);
-
   useEffect(()=> {
     dispatch(getCurrentArticle(article));
   }, []);
@@ -63,7 +64,7 @@ const FullArticle = () => {
                         >
               <Button danger style={{fontWeight: "400", fontSize: "18px"}}>Delete</Button>
             </Popconfirm>
-            <NavLink to='/article/1/edit' className="button button_green article-edit__button">Edit</NavLink>
+            <NavLink to={`/articles/${slug}/edit`} className="button button_green article-edit__button">Edit</NavLink>
           </div> : null}
           
           <div className='article-markdown'><Markdown>{body}</Markdown></div>
