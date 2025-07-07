@@ -1,15 +1,15 @@
 import { Tag, Popconfirm, Button, message } from 'antd';
-import Icon, {HeartOutlined } from '@ant-design/icons';
+import Icon, { HeartOutlined } from '@ant-design/icons';
 import './FullArticle.scss';
 import { NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getCurrentArticle, deleteCurrentUserArticle, likeUserArticle, unLikeUserArticle } from '../store/slicers/articleSlicer';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import Markdown from 'react-markdown';
-import {DateTime} from 'luxon';
-import useCheckJWT from '../../hooks/useCheckJWT';
+import { DateTime } from 'luxon';
+import Spinner from '../spinner/';
+import { useNavigate } from 'react-router-dom'; // импортируем для навигации
 
 const HeartSvg = () => (
   <svg width="18px" height="17px" fill="currentColor" viewBox="0 0 1024 1024">
@@ -20,82 +20,95 @@ const HeartSvg = () => (
 const HeartIcon = props => <Icon component={HeartSvg} {...props} />;
 
 const FullArticle = () => {
-
-  
   const { article } = useParams();
-  const {title, author, description, favoritesCount, tags, body, createdAt, slug, favorited} = useSelector(state=>state.article);
-  const funt = useCheckJWT();
+  const { title, author, description, favoritesCount, tags, body, createdAt, slug, favorited, loading, error } = useSelector(state => state.article);
   const dispatch = useDispatch();
   const { isLogined, username } = useSelector(state => state.user);
-
-  const confirm = e => {
-    message.success('Click on Yes');
-    dispatch(deleteCurrentUserArticle(article))
+const navigate = useNavigate();
+  const confirm = () => {
+    message.success('Article deleted');
+    dispatch(deleteCurrentUserArticle(article)).then(()=>{navigate('/')});
   };
 
-  const cancel = e => {
-    message.error('Click on No');
+  const cancel = () => {
+    message.error('Delete canceled');
   };
 
-  const handleHeartChange = (slug) => {
+  const handleHeartChange = () => {
     if (!favorited) {
       dispatch(likeUserArticle(slug));
-      
-      console.log('like')
     } else {
-      dispatch(unLikeUserArticle(slug))
-      console.log('dislike')
+      dispatch(unLikeUserArticle(slug));
     }
-    console.log('slug: ', slug, ' favorited: ', favorited)
+  };
+
+  useEffect(() => {
+    dispatch(getCurrentArticle(article))
+  }, [dispatch, article]);
+
+  if (loading) {
+    return <Spinner />;
   }
 
-  useEffect(()=> {
-    dispatch(getCurrentArticle(article));
-  }, []);
-    
-    return (
-        <div className="article-card">
-            <div className='article-content'>
-             <div className='article__header article__header_full'>
-                <div className='article__info-meta'>
-                    <div className='article-title'>{title}</div>
-                    <div className='heart'>
-                      <div onClick={()=>handleHeartChange(slug)} style={{cursor: "pointer"}}>{favorited ? <HeartIcon style={{ color: '#FF0707' }}/> : <HeartOutlined className='heart__icon'/>}</div>
-                      <span className='heart__count'>{favoritesCount}</span>
-                    </div>
-                    <div className='tags'>
-                        {tags.map((el, index) => (
-                            <Tag key={index}>{el}</Tag>
-                        ))}
-                    </div>
-                </div>
-                <div className='article-info-person'>
-                    <div className='article-info-person__flex'>
-                        <div className='article__author'>{author.username}</div>
-                        <div className='article__date'>{DateTime.fromISO(createdAt).toFormat('LLLL dd, yyyy  ')}</div>
-                    </div>
-                    <img className='article__avatar' src={author.image} alt='avatar'/>
-                </div>
+  if (error) {
+    return <div className="error-message" style={{ color: 'red', padding: '20px', textAlign: 'center' }}>
+      Ошибка загрузки статьи: {error.toString()}
+    </div>;
+  }
+
+  // Если статья не загружена (например, пустой объект), можно отобразить заглушку
+  if (!slug) {
+    return <div style={{ padding: '20px', textAlign: 'center' }}>Статья не найдена</div>;
+  }
+
+  return (
+    <div className="article-card">
+      <div className='article-content'>
+        <div className='article__header article__header_full'>
+          <div className='article__info-meta'>
+            <div className='article-title'>{title}</div>
+            <div className='heart'>
+              <div onClick={handleHeartChange} style={{ cursor: "pointer" }}>
+                {favorited ? <HeartIcon style={{ color: '#FF0707' }} /> : <HeartOutlined className='heart__icon' />}
+              </div>
+              <span className='heart__count'>{favoritesCount}</span>
             </div>
-            <div className='article__text article__text_full'>{description}</div>
-           </div>
-           {isLogined && (username === author.username) ? <div className='article-buttons'>
-                      <Popconfirm
-                          description="Are you sure to delete this article??"
-                          onConfirm={confirm}
-                          onCancel={cancel}
-                          okText="Yes"
-                          cancelText="No"
-                          placement={'right'}
-                        >
-              <Button danger style={{fontWeight: "400", fontSize: "18px"}}>Delete</Button>
-            </Popconfirm>
-            <NavLink to={`/articles/${slug}/edit`} className="button button_green article-edit__button">Edit</NavLink>
-          </div> : null}
-          
-          <div className='article-markdown'><Markdown>{body}</Markdown></div>
+            <div className='tags'>
+              {tags.map((el, index) => (
+                <Tag key={index}>{el}</Tag>
+              ))}
+            </div>
+          </div>
+          <div className='article-info-person'>
+            <div className='article-info-person__flex'>
+              <div className='article__author'>{author.username}</div>
+              <div className='article__date'>{DateTime.fromISO(createdAt).toFormat('LLLL dd, yyyy')}</div>
+            </div>
+            <img className='article__avatar' src={author.image} alt='avatar' />
+          </div>
         </div>
-    );
-}
+        <div className='article__text article__text_full'>{description}</div>
+      </div>
+
+      {isLogined && username === author.username && (
+        <div className='article-buttons'>
+          <Popconfirm
+            title="Are you sure to delete this article?"
+            onConfirm={confirm}
+            onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+            placement={'right'}
+          >
+            <Button danger style={{ fontWeight: "400", fontSize: "18px" }}>Delete</Button>
+          </Popconfirm>
+          <NavLink to={`/articles/${slug}/edit`} className="button button_green article-edit__button">Edit</NavLink>
+        </div>
+      )}
+
+      <div className='article-markdown'><Markdown>{body}</Markdown></div>
+    </div>
+  );
+};
 
 export default FullArticle;

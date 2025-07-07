@@ -7,7 +7,7 @@ import { logout } from '../store/slicers/userSlicer';
 
 const Header = () => {
   const { isLogined, img,username } = useSelector(state => state.user);
-  const funt = useCheckJWT();
+  useCheckJWT()
   const dispatch = useDispatch();
 
   const handleLogout = () => {

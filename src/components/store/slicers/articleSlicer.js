@@ -132,6 +132,8 @@ const articleSlice = createSlice({
           state.favoritesCount = favoritesCount;
           state.author = author;
           state.createdAt = createdAt;
+          state.loading = false;
+          state.error = null;
         })
 
       .addCase(getCurrentArticle.rejected, (state, action) => {

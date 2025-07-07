@@ -4,8 +4,15 @@ import { ArticlePage, ArticlesPage, LoginPage, RegisterPage, EditProfilePage, Ne
 import './App.scss';
 import { Provider } from "react-redux";
 import store from "../store/store";
+import withAuthProtection from "../hoc/withAuthProtection";
 
 const App = () => {
+
+  const ProtectedEditProfilePage = withAuthProtection(EditProfilePage);
+  const ProtectedNewArticlePage = withAuthProtection(NewArticlePage);
+  const ProtectedEditArticlePage = withAuthProtection(EditArticlePage);
+
+
   return (
     <Router><Provider store={store}>
       <Header />
@@ -22,9 +29,9 @@ const App = () => {
         />
 
         <Route path="/sign-up" element={<RegisterPage />} />
-         <Route path="/profile" element={<EditProfilePage />} />
-         <Route path='/new-article' element={<NewArticlePage />}/>
-         <Route path='/articles/:article/edit' element={<EditArticlePage />}/>
+         <Route path="/profile" element={<ProtectedEditProfilePage/>} />
+         <Route path='/new-article' element={<ProtectedNewArticlePage />}/>
+         <Route path='/articles/:article/edit' element={<ProtectedEditArticlePage />}/>
       </Routes></Provider>
     </Router >
   )
