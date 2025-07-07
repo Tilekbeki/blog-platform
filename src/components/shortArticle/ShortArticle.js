@@ -5,6 +5,9 @@ import { NavLink } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { useEffect, useState } from 'react';
 
+
+import { useDispatch } from 'react-redux';
+
 const HeartSvg = () => (
   <svg width="18px" height="17px" fill="currentColor" viewBox="0 0 1024 1024">
     <title>heart icon</title>
@@ -14,35 +17,32 @@ const HeartSvg = () => (
 const HeartIcon = props => <Icon component={HeartSvg} {...props} />;
 <HeartIcon style={{ color: '#FF0707' }} />
 
-const handleHeartChange = (slug) => {
-    console.log(slug)
-}
 
 
-const ShortArticle = ({ title, description, tags, author, datePublished, slug, favorited, favoritesCount }) => {
-  const [isLiked, setIsLiked] = useState(false);
+const ShortArticle = ({ title, description, tags, author, datePublished, slug, favorited, favoritesCount, handleHeartChange }) => {
+  const [isLiked, setIsLiked] = useState(favorited);
 
-  useEffect(() => {
+ useEffect(() => {
     const storedLikes = JSON.parse(localStorage.getItem('likesCollection') || '[]');
     const likesSet = new Set(storedLikes);
     setIsLiked(likesSet.has(slug));
   }, [slug]);
 
-  const handleHeartChange = (slug) => {
-    console.log(slug);
-    // Пример логики лайка/анлайка
+  const toggleLike = () => {
     const storedLikes = JSON.parse(localStorage.getItem('likesCollection') || '[]');
     const likesSet = new Set(storedLikes);
-    if (likesSet.has(slug)) {
-      likesSet.delete(slug);
+    console.log('лайкнут?',likesSet.has(slug), 'isLiked',isLiked, 'favorited', favorited);
+    if (isLiked && likesSet.has(slug)) {
+      console.log('dislike', favorited);
       setIsLiked(false);
     } else {
-      likesSet.add(slug);
       setIsLiked(true);
     }
-    localStorage.setItem('likesCollection', JSON.stringify([...likesSet]));
-  };
 
+    localStorage.setItem('likesCollection', JSON.stringify([...likesSet]));
+
+    handleHeartChange(slug, isLiked); // передаём новый статус родителю
+  };
   return (
     <div className="article">
       <div className="article-content">
@@ -52,7 +52,7 @@ const ShortArticle = ({ title, description, tags, author, datePublished, slug, f
               {title}
             </NavLink>
             <div className="heart">
-              <div onClick={() => handleHeartChange(slug)} style={{ cursor: 'pointer' }}>
+              <div onClick={() => toggleLike()} style={{ cursor: 'pointer' }}>
                 {isLiked ? <HeartIcon style={{ color: '#FF0707' }} /> : <HeartOutlined className="heart__icon" />}
               </div>
               <span className="heart__count">{favoritesCount}</span>

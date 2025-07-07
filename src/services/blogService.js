@@ -107,10 +107,19 @@ const blogService = () => {
     }
 
     const getArticles = async (pageNumber=1) => {
-        let offset = pageNumber*5;
-        const url = `${_BASE_URL}/articles?limit=${5}&offset=${pageNumber}`;
+        let url = `${_BASE_URL}/articles?limit=${5}&offset=${pageNumber}`;
         const response = await getResource(url);
+        
+            console.log(response.articles)
         return response.articles
+    };
+
+     const getTotalArticles = async () => {
+        let url = `${_BASE_URL}/articles`;
+        const response = await getResource(url);
+        
+            console.log(response.articlesCount)
+        return response.articlesCount
     };
 
     const getArticle = async (slug) => {
@@ -178,7 +187,8 @@ const blogService = () => {
         updateArticle,
         deleteArticle,
         likeArticle,
-        unLikeArticle
+        unLikeArticle,
+        getTotalArticles
     }
 }
 
