@@ -1,14 +1,23 @@
-import ArticleList from '../articleList/index';
+import ArticleList from "../articleList/index";
 import { Pagination } from "antd";
-import { useDispatch } from 'react-redux';
-import { getArticlesList } from '../store/slicers/articlesSlicer';
-import blogService from '../../services/blogService';
-import { useEffect, useState } from 'react';
+import { useDispatch } from "react-redux";
+import { getArticlesList } from "../store/slicers/articlesSlicer";
+import blogService from "../../services/blogService";
+import { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const ArticlesPage = () => {
   const [length, setLength] = useState(1);
   const { getTotalArticles } = blogService();
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const currentPage = parseInt(searchParams.get("page")) || 1;
+
+  useEffect(() => {
+    dispatch(getArticlesList(currentPage));
+  }, [dispatch, currentPage]);
 
   useEffect(() => {
     const fetchTotalArticles = async () => {
@@ -19,23 +28,22 @@ const ArticlesPage = () => {
   }, []);
 
   const handlePageChange = (page) => {
-    dispatch(getArticlesList(page));
+    navigate(`/articles?page=${page}`);
   };
 
   return (
-    <>
-      <div style={{ padding: "26px 0" }}>
-        <ArticleList />
-        <Pagination
-          align="center"
-          style={{ padding: "13px 0" }}
-          onChange={handlePageChange}
-          defaultCurrent={1}
-          total={length ? length : 1}
-        />
-      </div>
-    </>
+    <div style={{ padding: "26px 0" }}>
+      <ArticleList />
+      <Pagination
+        align="center"
+        style={{ padding: "13px 0" }}
+        onChange={handlePageChange}
+        current={currentPage}
+        total={length}
+        pageSize={10} // укажи, если есть лимит на страницу
+      />
+    </div>
   );
-}
+};
 
 export default ArticlesPage;
