@@ -1,25 +1,25 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import blogService from '../../../services/blogService';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import blogService from "../../../services/blogService";
 
-const {login, registeration, getProfile, getUserInfo, updateUser} = blogService()
+const { login, registeration, getProfile, getUserInfo, updateUser } =
+  blogService();
 export const loginUser = createAsyncThunk(
-  'user/login',
+  "user/login",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await login(credentials);
-      
-      localStorage.setItem('jwtToken', response.token);
-      if (response.errors) {
 
+      localStorage.setItem("jwtToken", response.token);
+      if (response.errors) {
       }
       return response; // { email, token }
     } catch (err) {
       return rejectWithValue(err.message);
     }
-  }
+  },
 );
 export const getUser = createAsyncThunk(
-  'user/profile',
+  "user/profile",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await getProfile(credentials);
@@ -27,40 +27,39 @@ export const getUser = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.message);
     }
-  }
+  },
 );
 
 export const registerUser = createAsyncThunk(
-  'user/register',
+  "user/register",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await registeration(credentials);
-      localStorage.setItem('jwtToken', response.token);
+      localStorage.setItem("jwtToken", response.token);
       return response; // { email, token }
     } catch (err) {
       return rejectWithValue(err.message);
     }
-  }
+  },
 );
 
 export const updateCurrentUser = createAsyncThunk(
-  'user/update',
+  "user/update",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await updateUser(credentials);
-      localStorage.setItem('jwtToken', response.token);
+      localStorage.setItem("jwtToken", response.token);
       if (response.errors) {
-
       }
       return response; // { email, token }
     } catch (err) {
       return rejectWithValue(err.message);
     }
-  }
+  },
 );
 
 export const getCurrentUserInfo = createAsyncThunk(
-  'user/getUserInfo',
+  "user/getUserInfo",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await getUserInfo(credentials);
@@ -68,33 +67,34 @@ export const getCurrentUserInfo = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.message);
     }
-  }
+  },
 );
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState: {
-    email: '',
-    username:'',
-    token: '',
-    img:'',
+    email: "",
+    username: "",
+    token: "",
+    img: "",
     loading: false,
     isLogined: false,
     validationError: null,
   },
   reducers: {
-    logout (state) {
-      state.email = '';
-      state.token = '';
+    logout(state) {
+      state.email = "";
+      state.token = "";
+      state.username = "";
+      state.img = "";
       state.isLogined = false;
     },
-    setEmail (state, action) {
+    setEmail(state, action) {
       state.email = action.payload;
     },
-    setLogin (state) {
+    setLogin(state) {
       state.isLogined = true;
-
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -106,6 +106,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.email = action.payload.email;
         state.token = action.payload.token;
+        state.username = action.payload.username;
         state.isLogined = true;
         state.img = action.payload.image;
       })
@@ -120,6 +121,7 @@ const userSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.email = action.payload.email;
+        state.username = action.payload.username;
         state.token = action.payload.token;
         state.isLogined = true;
       })
@@ -135,12 +137,16 @@ const userSlice = createSlice({
         state.loading = false;
         state.username = action.payload.username;
         state.img = action.payload.image;
+        if (!action.payload.image)
+          state.img =
+            "https://static.productionready.io/images/smiley-cyrus.jpg";
         state.isLogined = true;
       })
       .addCase(getUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      }).addCase(getCurrentUserInfo.pending, (state) => {
+      })
+      .addCase(getCurrentUserInfo.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
@@ -149,7 +155,9 @@ const userSlice = createSlice({
         state.username = action.payload.username;
         state.email = action.payload.email;
         state.img = action.payload.image;
-        if (!action.payload.image) state.img = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+        if (!action.payload.image)
+          state.img =
+            "https://static.productionready.io/images/smiley-cyrus.jpg";
         state.isLogined = true;
       })
       .addCase(getCurrentUserInfo.rejected, (state, action) => {
@@ -165,7 +173,9 @@ const userSlice = createSlice({
         state.username = action.payload.username;
         state.email = action.payload.email;
         state.img = action.payload.image;
-        if (!action.payload.image) state.img = 'https://static.productionready.io/images/smiley-cyrus.jpg';
+        if (!action.payload.image)
+          state.img =
+            "https://static.productionready.io/images/smiley-cyrus.jpg";
         state.isLogined = true;
       })
       .addCase(updateCurrentUser.rejected, (state, action) => {
@@ -175,5 +185,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout,setLogin } = userSlice.actions;
-export default userSlice.reducer;   
+export const { logout, setLogin } = userSlice.actions;
+export default userSlice.reducer;
