@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import blogService from "../../../services/blogService";
+import defaultAvatar from "../../../resources/smiley-cyrus.jpg";
 
 const { login, registeration, getProfile, getUserInfo, updateUser } =
   blogService();
@@ -122,6 +123,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.email = action.payload.email;
         state.username = action.payload.username;
+        state.img = defaultAvatar;
         state.token = action.payload.token;
         state.isLogined = true;
       })
@@ -137,9 +139,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.username = action.payload.username;
         state.img = action.payload.image;
-        if (!action.payload.image)
-          state.img =
-            "https://static.productionready.io/images/smiley-cyrus.jpg";
+        if (!action.payload.image) state.img = defaultAvatar;
         state.isLogined = true;
       })
       .addCase(getUser.rejected, (state, action) => {
@@ -155,9 +155,7 @@ const userSlice = createSlice({
         state.username = action.payload.username;
         state.email = action.payload.email;
         state.img = action.payload.image;
-        if (!action.payload.image)
-          state.img =
-            "https://static.productionready.io/images/smiley-cyrus.jpg";
+        if (!action.payload.image) state.img = defaultAvatar;
         state.isLogined = true;
       })
       .addCase(getCurrentUserInfo.rejected, (state, action) => {
@@ -173,9 +171,7 @@ const userSlice = createSlice({
         state.username = action.payload.username;
         state.email = action.payload.email;
         state.img = action.payload.image;
-        if (!action.payload.image)
-          state.img =
-            "https://static.productionready.io/images/smiley-cyrus.jpg";
+        if (!action.payload.image) state.img = defaultAvatar;
         state.isLogined = true;
       })
       .addCase(updateCurrentUser.rejected, (state, action) => {
